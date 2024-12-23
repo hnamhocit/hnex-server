@@ -10,8 +10,17 @@ export class PostsService {
 		const posts = await this.prismaService.post.findMany({
 			include: {
 				user: true,
+				media: {
+					select: {
+						id: true,
+						type: true,
+					},
+				},
 				reactions: {
-					include: { user: true },
+					select: {
+						id: true,
+						name: true,
+					},
 				},
 				_count: {
 					select: { comments: true },
@@ -35,9 +44,18 @@ export class PostsService {
 		return { data: post };
 	}
 
-	async createPost(data: Prisma.PostCreateInput, userId: string) {
+	async createPost(
+		data: Prisma.PostCreateInput & { mediaIds: string[] },
+		userId: string,
+	) {
 		const createdPost = await this.prismaService.post.create({
-			data: { ...data, user: { connect: { id: userId } } },
+			data: {
+				content: data.content,
+				user: { connect: { id: userId } },
+				media: {
+					connect: [...data.mediaIds.map((id) => ({ id }))],
+				},
+			},
 		});
 
 		return { data: createdPost };

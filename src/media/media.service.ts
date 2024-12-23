@@ -7,25 +7,19 @@ import { PrismaService } from '../prisma/prisma.service';
 export class MediaService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	async uploads(files: Express.Multer.File[], userId: string) {
-		const uploadedFiles = await Promise.all([
-			...files.map(async (file) => {
-				return await this.prismaService.media.create({
-					data: {
-						name: file.originalname,
-						size: file.size,
-						contentType: file.mimetype,
-						buffer: file.buffer,
-						type: file.mimetype
-							.split('/')[0]
-							.toUpperCase() as MediaType,
-						userId,
-					},
-				});
-			}),
-		]);
+	async upload(file: Express.Multer.File, userId: string) {
+		const uploadedFile = await this.prismaService.media.create({
+			data: {
+				name: file.originalname,
+				size: file.size,
+				contentType: file.mimetype,
+				buffer: file.buffer,
+				type: file.mimetype.split('/')[0].toUpperCase() as MediaType,
+				user: { connect: { id: userId } },
+			},
+		});
 
-		return { data: uploadedFiles };
+		return { data: uploadedFile };
 	}
 
 	async getUploadMedia(id: string) {

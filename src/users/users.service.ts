@@ -39,4 +39,9 @@ export class UsersService {
 
 		return { data: user };
 	}
+
+	async getUsers() {
+		const users = await this.prismaService.user.findMany();
+		return { data: users };
+	}
 }

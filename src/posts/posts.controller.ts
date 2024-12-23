@@ -20,7 +20,6 @@ export class PostsController {
 	constructor(private readonly postsService: PostsService) {}
 
 	@Get()
-	@UseGuards(AccessTokenGuard)
 	async getPosts() {
 		return await this.postsService.getPosts();
 	}
@@ -34,7 +33,7 @@ export class PostsController {
 	@Post()
 	@UseGuards(AccessTokenGuard)
 	async createPost(
-		@Body() body: Prisma.PostCreateInput,
+		@Body() body: Prisma.PostCreateInput & { mediaIds: string[] },
 		@Req() req: Request,
 	) {
 		return await this.postsService.createPost(body, req.user['sub']);

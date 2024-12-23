@@ -16,6 +16,11 @@ import { UsersService } from './users.service';
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
+	@Get()
+	async getUsers() {
+		return await this.usersService.getUsers();
+	}
+
 	@UseGuards(AccessTokenGuard)
 	@Get('me')
 	async getMe(@Req() req: Request) {

@@ -24,9 +24,9 @@ export class TransformInterceptor<T>
 		return next.handle().pipe(
 			map((response) => {
 				return {
-					code: response.code || 200,
-					data: response.data || null,
-					error: response.error,
+					code: response?.code ?? 200,
+					data: response?.data ?? null,
+					error: response?.error,
 				};
 			}),
 		);
