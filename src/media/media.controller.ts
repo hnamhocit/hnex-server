@@ -18,6 +18,11 @@ import { MediaService } from './media.service';
 export class MediaController {
 	constructor(private readonly mediaService: MediaService) {}
 
+	@Get('')
+	async getMedia() {
+		return await this.mediaService.findMany();
+	}
+
 	@Post('upload')
 	@UseGuards(AccessTokenGuard)
 	@UseInterceptors(FileInterceptor('file'))
@@ -31,6 +36,7 @@ export class MediaController {
 	@Get(':id')
 	async getUploadMedia(@Param('id') id: string, @Res() res: Response) {
 		const { data } = await this.mediaService.getUploadMedia(id);
-		res.end(data.buffer);
+		res.contentType(data.contentType);
+		res.send(Buffer.from(data.buffer));
 	}
 }

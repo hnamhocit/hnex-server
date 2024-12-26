@@ -22,6 +22,11 @@ export class MediaService {
 		return { data: uploadedFile };
 	}
 
+	async findMany() {
+		const media = await this.prismaService.media.findMany();
+		return { data: media };
+	}
+
 	async getUploadMedia(id: string) {
 		const media = await this.prismaService.media.findUnique({
 			where: { id },
