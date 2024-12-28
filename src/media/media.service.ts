@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { MediaType } from '@prisma/client';
 
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -14,7 +13,6 @@ export class MediaService {
 				size: file.size,
 				contentType: file.mimetype,
 				buffer: file.buffer,
-				type: file.mimetype.split('/')[0].toUpperCase() as MediaType,
 				user: { connect: { id: userId } },
 			},
 		});

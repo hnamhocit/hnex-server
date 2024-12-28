@@ -1,13 +1,7 @@
-import {
-	Body,
-	Controller,
-	Get,
-	Param,
-	Post,
-	Req,
-	UseGuards,
-} from '@nestjs/common';
 import { Request } from 'express';
+import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 
 import { RefreshTokenGuard } from '../common/guards/refresh-token.guard';
 import { AuthService } from './auth.service';
@@ -28,16 +22,15 @@ export class AuthController {
 		return await this.authService.register(registerDto);
 	}
 
-	@Post('logout')
-	async logout(@Param('id') id: string) {
-		return await this.authService.logout(id);
+	@Get('logout')
+	@UseGuards(AccessTokenGuard)
+	async logout(@Req() req: Request) {
+		return await this.authService.logout(req.user['sub']);
 	}
 
 	@Get('refresh')
 	@UseGuards(RefreshTokenGuard)
 	async refresh(@Req() req: Request) {
-		console.log(req.user);
-
 		return await this.authService.refresh(
 			req.user['sub'],
 			req.user['refreshToken'],

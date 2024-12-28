@@ -22,7 +22,7 @@ enum Role {
 model User {
 	id String @id @default(uuid())
 	email String @unique
-	username String? @unique
+	username String @unique
 	emailVerified Boolean @default(false)
 	role Role @default(USER)
 	bio String?
@@ -54,12 +54,6 @@ model Follows {
 	@@id([followingId, followedById])
 }
 
-enum MediaType {
-	IMAGE
-	VIDEO
-	DOCUMENT
-}
-
 model Post {
     id String @id @default(uuid())
     content String
@@ -78,7 +72,6 @@ model Media {
     contentType String
     name String
     size Int
-    type MediaType
     userId String
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
     postId String?
@@ -101,10 +94,19 @@ model Comment {
 	updatedAt DateTime @updatedAt
 }
 
+enum ReactionType {
+	ANGRY
+	LIKE
+	HEART
+	SURPRISE
+	CRY
+	SMILE
+}
+
 
 model Reaction {
 	id String @id @default(uuid())
-	name String
+	type ReactionType
 	postId String
 	post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 	userId String

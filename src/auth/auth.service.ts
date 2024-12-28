@@ -1,8 +1,9 @@
+import { hash, verify } from 'argon2';
+
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import { hash, verify } from 'argon2';
 
 import { MailsService } from '../mails/mails.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -63,14 +64,15 @@ export class AuthService {
 
 		const hashedPassword = await hash(registerDto.password);
 		const OTP = generateOTP();
-		const expiresIn = new Date(Date.now() + 5 * 60 * 1000);
+		const fiveMinuteLater = new Date(Date.now() + 5 * 60 * 1000);
 
 		const newUser = await this.prismaService.user.create({
 			data: {
 				...registerDto,
 				password: hashedPassword,
 				activationCode: OTP,
-				actionationCodeExpiredIn: expiresIn,
+				actionationCodeExpiredIn: fiveMinuteLater,
+				username: registerDto.email.split('@')[0],
 			},
 		});
 
@@ -121,10 +123,16 @@ export class AuthService {
 	}
 
 	async updateRefreshToken(id: string, refreshToken: string | null) {
-		const hashedRefreshToken = await hash(refreshToken);
+		let hashedRefreshToken: string;
+		if (refreshToken) {
+			hashedRefreshToken = await hash(refreshToken);
+		}
+
 		await this.prismaService.user.update({
 			where: { id },
-			data: { refreshToken: hashedRefreshToken },
+			data: {
+				refreshToken: refreshToken ? hashedRefreshToken : refreshToken,
+			},
 		});
 	}
 

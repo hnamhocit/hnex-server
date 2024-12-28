@@ -1,3 +1,6 @@
+import { Request } from 'express';
+import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+
 import {
 	Body,
 	Controller,
@@ -8,8 +11,7 @@ import {
 	UseGuards,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { Request } from 'express';
-import { AccessTokenGuard } from 'src/common/guards/access-token.guard';
+
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -25,12 +27,6 @@ export class UsersController {
 	@Get('me')
 	async getMe(@Req() req: Request) {
 		return await this.usersService.getProfile(req.user['sub']);
-	}
-
-	@UseGuards(AccessTokenGuard)
-	@Get('me/logout')
-	async meLogout(@Req() req: Request) {
-		return await this.usersService.logout(req.user['sub']);
 	}
 
 	@UseGuards(AccessTokenGuard)

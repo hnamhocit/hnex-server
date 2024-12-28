@@ -4,7 +4,9 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { join } from 'path';
 
+import { UsersService } from 'src/users/users.service';
 import { MediaModule } from '../media/media.module';
+import { MailsController } from './mails.controller';
 import { MailsService } from './mails.service';
 
 @Module({
@@ -35,7 +37,8 @@ import { MailsService } from './mails.service';
 		}),
 		MediaModule,
 	],
-	providers: [MailsService],
+	controllers: [MailsController],
+	providers: [MailsService, UsersService],
 	exports: [MailsService],
 })
 export class MailsModule {}

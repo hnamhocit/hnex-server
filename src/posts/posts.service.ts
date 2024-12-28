@@ -1,6 +1,7 @@
+import { PrismaService } from 'src/prisma/prisma.service';
+
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class PostsService {
@@ -13,13 +14,14 @@ export class PostsService {
 				media: {
 					select: {
 						id: true,
-						type: true,
+						contentType: true,
 					},
 				},
 				reactions: {
 					select: {
 						id: true,
-						name: true,
+						type: true,
+						user: true,
 					},
 				},
 				_count: {
@@ -36,6 +38,7 @@ export class PostsService {
 			where: { id },
 			include: {
 				user: true,
+				media: true,
 				comments: true,
 				reactions: true,
 			},
@@ -54,6 +57,25 @@ export class PostsService {
 				user: { connect: { id: userId } },
 				media: {
 					connect: [...data.mediaIds.map((id) => ({ id }))],
+				},
+			},
+			include: {
+				user: true,
+				media: {
+					select: {
+						id: true,
+						contentType: true,
+					},
+				},
+				reactions: {
+					select: {
+						id: true,
+						type: true,
+						user: true,
+					},
+				},
+				_count: {
+					select: { comments: true },
 				},
 			},
 		});
