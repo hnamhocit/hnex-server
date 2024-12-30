@@ -1,7 +1,7 @@
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service'
 
-import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Injectable } from '@nestjs/common'
+import { Prisma } from '@prisma/client'
 
 @Injectable()
 export class PostsService {
@@ -39,7 +39,13 @@ export class PostsService {
 			include: {
 				user: true,
 				media: true,
-				comments: true,
+				comments: {
+					include: {
+						user: true,
+						replies: true,
+						media: true,
+					},
+				},
 				reactions: true,
 			},
 		});

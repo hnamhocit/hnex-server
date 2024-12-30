@@ -74,6 +74,8 @@ model Media {
     size Int
     userId String
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+	commentId String?
+	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
     postId String?
     post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
     createdAt DateTime @default(now())
@@ -89,6 +91,7 @@ model Comment {
 	postId String
 	post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 	userId String
+	media Media[]
 	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt

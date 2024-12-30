@@ -1,7 +1,15 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsString, IsUUID, ValidateNested } from 'class-validator'
 
 export class CreateCommentDTO {
-	@IsString()
+	@IsUUID()
+	@IsNotEmpty()
+	userId: string;
+
+	@IsArray()
+	@ValidateNested({ each: true })
+	mediaIds: string[];
+
+	@IsUUID()
 	@IsNotEmpty()
 	postId: string;
 
