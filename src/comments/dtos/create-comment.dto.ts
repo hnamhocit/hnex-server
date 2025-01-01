@@ -1,6 +1,18 @@
-import { IsArray, IsNotEmpty, IsString, IsUUID, ValidateNested } from 'class-validator'
+import {
+	IsArray,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator';
 
 export class CreateCommentDTO {
+	@IsOptional()
+	@IsString()
+	@IsNotEmpty()
+	parentId?: string;
+
 	@IsUUID()
 	@IsNotEmpty()
 	userId: string;

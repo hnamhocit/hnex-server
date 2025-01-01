@@ -1,11 +1,21 @@
+import {
+	IsEnum,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+	IsUUID,
+} from 'class-validator';
+
 import { $Enums } from '@prisma/client';
-import { IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateReactionDTO {
-	@IsString()
-	@IsNotEmpty()
+	@IsOptional()
 	@IsUUID()
-	postId: string;
+	postId?: string;
+
+	@IsOptional()
+	@IsUUID()
+	commentId?: string;
 
 	@IsString()
 	@IsNotEmpty()

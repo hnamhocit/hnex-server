@@ -92,6 +92,7 @@ model Comment {
 	post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 	userId String
 	media Media[]
+	reactions Reaction[]
 	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
@@ -110,9 +111,11 @@ enum ReactionType {
 model Reaction {
 	id String @id @default(uuid())
 	type ReactionType
-	postId String
-	post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+	postId String?
+	post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
 	userId String
+	commentId String?
+	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt

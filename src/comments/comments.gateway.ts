@@ -1,11 +1,14 @@
-import { Server } from 'socket.io'
+import { Server } from 'socket.io';
 
 import {
-    MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer
-} from '@nestjs/websockets'
+	MessageBody,
+	SubscribeMessage,
+	WebSocketGateway,
+	WebSocketServer,
+} from '@nestjs/websockets';
 
-import { CommentsService } from './comments.service'
-import { CreateCommentDTO } from './dtos/create-comment.dto'
+import { CommentsService } from './comments.service';
+import { CreateCommentDTO } from './dtos/create-comment.dto';
 
 @WebSocketGateway({
 	cors: {
@@ -22,5 +25,12 @@ export class CommentsGateway {
 	async createComment(@MessageBody() data: CreateCommentDTO) {
 		const createdComment = await this.commentsService.createComment(data);
 		this.server.emit('comment:created', createdComment);
+	}
+
+	@SubscribeMessage('comment:delete')
+	async deleteComment(@MessageBody('id') id: string) {
+		const deletedComment = await this.commentsService.deleteComment(id);
+		console.log({ deletedComment });
+		this.server.emit('comment:deleted', deletedComment);
 	}
 }

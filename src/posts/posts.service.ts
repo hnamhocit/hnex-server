@@ -1,7 +1,7 @@
-import { PrismaService } from 'src/prisma/prisma.service'
+import { PrismaService } from 'src/prisma/prisma.service';
 
-import { Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class PostsService {
@@ -9,6 +9,9 @@ export class PostsService {
 
 	async getPosts() {
 		const posts = await this.prismaService.post.findMany({
+			orderBy: {
+				createdAt: 'desc',
+			},
 			include: {
 				user: true,
 				media: {
@@ -38,15 +41,34 @@ export class PostsService {
 			where: { id },
 			include: {
 				user: true,
-				media: true,
+				media: {
+					select: { id: true, contentType: true },
+				},
 				comments: {
 					include: {
 						user: true,
-						replies: true,
-						media: true,
+						media: {
+							select: {
+								id: true,
+								contentType: true,
+							},
+						},
+						reactions: {
+							select: {
+								id: true,
+								type: true,
+								user: true,
+							},
+						},
 					},
 				},
-				reactions: true,
+				reactions: {
+					select: {
+						id: true,
+						type: true,
+						user: true,
+					},
+				},
 			},
 		});
 

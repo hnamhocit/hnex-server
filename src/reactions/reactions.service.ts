@@ -10,10 +10,14 @@ export class ReactionsService {
 	constructor(private readonly prismaService: PrismaService) {}
 
 	async createReaction(data: CreateReactionDTO, userId: string) {
+		const obj = data.commentId
+			? { comment: { connect: { id: data.commentId } } }
+			: { post: { connect: { id: data.postId } } };
+
 		const createdReaction = await this.prismaService.reaction.create({
 			data: {
 				type: data.type,
-				post: { connect: { id: data.postId } },
+				...obj,
 				user: { connect: { id: userId } },
 			},
 			include: {
