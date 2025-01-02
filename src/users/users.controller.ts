@@ -6,6 +6,7 @@ import {
 	Controller,
 	Delete,
 	Get,
+	Param,
 	Patch,
 	Req,
 	UseGuards,
@@ -27,6 +28,11 @@ export class UsersController {
 	@Get('me')
 	async getMe(@Req() req: Request) {
 		return await this.usersService.getProfile(req.user['sub']);
+	}
+
+	@Get(':id')
+	async getUserProfile(@Param('id') id: string) {
+		return await this.usersService.getProfile(id);
 	}
 
 	@UseGuards(AccessTokenGuard)

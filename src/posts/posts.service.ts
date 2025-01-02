@@ -13,7 +13,9 @@ export class PostsService {
 				createdAt: 'desc',
 			},
 			include: {
-				user: true,
+				user: {
+					include: { followers: true, followings: true },
+				},
 				media: {
 					select: {
 						id: true,
@@ -40,7 +42,12 @@ export class PostsService {
 		const post = await this.prismaService.post.findUnique({
 			where: { id },
 			include: {
-				user: true,
+				user: {
+					include: {
+						followers: true,
+						followings: true,
+					},
+				},
 				media: {
 					select: { id: true, contentType: true },
 				},

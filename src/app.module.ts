@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common'
-import { ConfigModule } from '@nestjs/config'
+import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import { AuthModule } from './auth/auth.module'
-import { CommentsModule } from './comments/comments.module'
-import { FollowsModule } from './follows/follows.module'
-import { MailsModule } from './mails/mails.module'
-import { MediaModule } from './media/media.module'
-import { PostsModule } from './posts/posts.module'
-import { PrismaModule } from './prisma/prisma.module'
-import { ReactionsModule } from './reactions/reactions.module'
-import { UsersModule } from './users/users.module'
+import { AuthModule } from './auth/auth.module';
+import { CommentsModule } from './comments/comments.module';
+import { MailsModule } from './mails/mails.module';
+import { MediaModule } from './media/media.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { PostsModule } from './posts/posts.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { ReactionsModule } from './reactions/reactions.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
 	imports: [
@@ -20,9 +20,9 @@ import { UsersModule } from './users/users.module'
 		MediaModule,
 		ReactionsModule,
 		PostsModule,
-		FollowsModule,
 		CommentsModule,
 		MailsModule,
+		NotificationsModule,
 	],
 })
 export class AppModule {}

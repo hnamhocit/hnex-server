@@ -39,19 +39,15 @@ model User {
 	posts Post[]
 	comments Comment[]
 	reactions Reaction[]
-	followedBy Follows[] @relation("followedBy")
-	following  Follows[] @relation("following")
+	notifications Notification[]
+	followers User[] @relation("followers")
+	followersRelation User[] @relation("followers")
+	followings User[] @relation("followings")
+	followingsRelation User[] @relation("followings")
+	friends User[] @relation("friends")
+	friendsRelation User[] @relation("friends")
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
-}
-
-model Follows {
-	followedBy   User @relation("followedBy", fields: [followedById], references: [id], onDelete: Cascade)
-	followedById String
-	following    User @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
-	followingId  String
-
-	@@id([followingId, followedById])
 }
 
 model Post {
@@ -74,6 +70,8 @@ model Media {
     size Int
     userId String
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+	notificatioId String?
+	notification Notification? @relation(fields: [notificatioId], references: [id], onDelete: Cascade)
 	commentId String?
 	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
     postId String?
@@ -107,7 +105,6 @@ enum ReactionType {
 	SMILE
 }
 
-
 model Reaction {
 	id String @id @default(uuid())
 	type ReactionType
@@ -117,6 +114,16 @@ model Reaction {
 	commentId String?
 	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
 	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+}
+
+model Notification {
+	id String @id @default(uuid())
+	media Media[]
+	receiverId String
+	receiver User @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+	message String
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
 }

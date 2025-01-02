@@ -11,6 +11,58 @@ export class UsersService {
 	async getProfile(id: string): Promise<Response<User>> {
 		const user = await this.prismaService.user.findUnique({
 			where: { id },
+			include: {
+				followings: true,
+				notifications: true,
+				followers: true,
+				media: {
+					select: {
+						id: true,
+						contentType: true,
+					},
+				},
+				posts: {
+					include: {
+						user: {
+							include: { followers: true, followings: true },
+						},
+						media: {
+							select: {
+								id: true,
+								contentType: true,
+							},
+						},
+						reactions: {
+							select: {
+								id: true,
+								type: true,
+								user: true,
+							},
+						},
+						_count: {
+							select: { comments: true },
+						},
+					},
+				},
+				comments: {
+					include: {
+						user: true,
+						media: {
+							select: {
+								id: true,
+								contentType: true,
+							},
+						},
+						reactions: {
+							select: {
+								id: true,
+								type: true,
+								user: true,
+							},
+						},
+					},
+				},
+			},
 		});
 
 		return { data: user };
@@ -43,5 +95,51 @@ export class UsersService {
 	async getUsers() {
 		const users = await this.prismaService.user.findMany();
 		return { data: users };
+	}
+
+	async follow(senderId: string, receiverId: string) {
+		// followerId is sender, followingId is receiver
+		const sender = await this.prismaService.user.update({
+			where: {
+				id: senderId,
+			},
+			data: {
+				followings: { connect: { id: receiverId } },
+			},
+			include: { followings: true, notifications: true, followers: true },
+		});
+
+		const receiver = await this.prismaService.user.update({
+			where: { id: receiverId },
+			data: {
+				followers: { connect: { id: senderId } },
+			},
+			include: { followings: true, notifications: true, followers: true },
+		});
+
+		return { data: { sender, receiver } };
+	}
+
+	async unfollow(senderId: string, receiverId: string) {
+		// followerId is sender, followingId is receiver
+		const sender = await this.prismaService.user.update({
+			where: {
+				id: senderId,
+			},
+			data: {
+				followings: { disconnect: { id: receiverId } },
+			},
+			include: { followings: true, notifications: true, followers: true },
+		});
+
+		const receiver = await this.prismaService.user.update({
+			where: { id: receiverId },
+			data: {
+				followers: { disconnect: { id: senderId } },
+			},
+			include: { followings: true, notifications: true, followers: true },
+		});
+
+		return { data: { sender, receiver } };
 	}
 }
