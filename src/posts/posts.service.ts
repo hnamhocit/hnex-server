@@ -7,8 +7,11 @@ import { Prisma } from '@prisma/client';
 export class PostsService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	async getPosts() {
+	async getPosts(cursor?: string) {
 		const posts = await this.prismaService.post.findMany({
+			take: 10,
+			skip: cursor ? 1 : 0,
+			cursor: cursor ? { id: cursor } : undefined,
 			orderBy: {
 				createdAt: 'desc',
 			},
@@ -35,7 +38,15 @@ export class PostsService {
 			},
 		});
 
-		return { data: posts };
+		const hasNext = posts.length === 10;
+
+		return {
+			data: {
+				posts,
+				cursor: hasNext ? posts[posts.length - 1].id : undefined,
+				hasNext,
+			},
+		};
 	}
 
 	async getPostDetail(id: string) {

@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 import {
 	Body,
 	Controller,
@@ -6,12 +8,12 @@ import {
 	Param,
 	Patch,
 	Post,
+	Query,
 	Req,
 	UseGuards,
 } from '@nestjs/common';
-
 import { Prisma } from '@prisma/client';
-import { Request } from 'express';
+
 import { AccessTokenGuard } from '../common/guards/access-token.guard';
 import { PostsService } from './posts.service';
 
@@ -20,8 +22,8 @@ export class PostsController {
 	constructor(private readonly postsService: PostsService) {}
 
 	@Get()
-	async getPosts() {
-		return await this.postsService.getPosts();
+	async getPosts(@Query('cursor') cursor: string) {
+		return await this.postsService.getPosts(cursor);
 	}
 
 	@Get(':id')
