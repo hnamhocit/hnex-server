@@ -5,125 +5,125 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-	provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-	provider = "postgresql"
-	url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 enum Role {
-	USER
-	SELLER
-	ADMIN
+    USER
+    SELLER
+    ADMIN
 }
 
 model User {
-	id String @id @default(uuid())
-	email String @unique
-	username String @unique
-	emailVerified Boolean @default(false)
-	role Role @default(USER)
-	bio String?
-	address String?
-	phoneNumber String?
-	displayName String
-	refreshToken String?
-	password String
-	photoURL String?
-	backgroundURL String?
-	activationCode String?
-	actionationCodeExpiredIn DateTime?
-	media Media[]
-	posts Post[]
-	comments Comment[]
-	reactions Reaction[]
-	notifications Notification[]
-	followers User[] @relation("followers")
-	followersRelation User[] @relation("followers")
-	followings User[] @relation("followings")
-	followingsRelation User[] @relation("followings")
-	friends User[] @relation("friends")
-	friendsRelation User[] @relation("friends")
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    id                       String         @id @default(uuid())
+    email                    String         @unique
+    username                 String         @unique
+    emailVerified            Boolean        @default(false)
+    role                     Role           @default(USER)
+    bio                      String?
+    address                  String?
+    phoneNumber              String?
+    displayName              String
+    refreshToken             String?
+    password                 String
+    photoURL                 String?
+    backgroundURL            String?
+    activationCode           String?
+    actionationCodeExpiredIn DateTime?
+    media                    Media[]
+    posts                    Post[]
+    comments                 Comment[]
+    reactions                Reaction[]
+    notifications            Notification[]
+    followers                User[]         @relation("followers")
+    followersRelation        User[]         @relation("followers")
+    followings               User[]         @relation("followings")
+    followingsRelation       User[]         @relation("followings")
+    friends                  User[]         @relation("friends")
+    friendsRelation          User[]         @relation("friends")
+    createdAt                DateTime       @default(now())
+    updatedAt                DateTime       @updatedAt
 }
 
 model Post {
-    id String @id @default(uuid())
-    content String
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId String
+    id        String     @id @default(uuid())
+    content   String
+    user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId    String
     reactions Reaction[]
-    comments Comment[]
-    media Media[]
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    comments  Comment[]
+    media     Media[]
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }
 
 model Media {
-    id String @id @default(uuid())
-    buffer Bytes
-    contentType String
-    name String
-    size Int
-    userId String
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-	notificatioId String?
-	notification Notification? @relation(fields: [notificatioId], references: [id], onDelete: Cascade)
-	commentId String?
-	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-    postId String?
-    post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id            String        @id @default(uuid())
+    buffer        Bytes
+    contentType   String
+    name          String
+    size          Int
+    userId        String
+    user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    notificatioId String?
+    notification  Notification? @relation(fields: [notificatioId], references: [id], onDelete: Cascade)
+    commentId     String?
+    comment       Comment?      @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    postId        String?
+    post          Post?         @relation(fields: [postId], references: [id], onDelete: Cascade)
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
 }
 
 model Comment {
-	id String @id @default(uuid())
-	replies Comment[] @relation("CommentReplies")
-	parentCommentId String?
-	parentComment Comment? @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
-	content String
-	postId String
-	post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
-	userId String
-	media Media[]
-	reactions Reaction[]
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    id              String     @id @default(uuid())
+    replies         Comment[]  @relation("CommentReplies")
+    parentCommentId String?
+    parentComment   Comment?   @relation("CommentReplies", fields: [parentCommentId], references: [id], onDelete: Cascade)
+    content         String
+    postId          String
+    post            Post       @relation(fields: [postId], references: [id], onDelete: Cascade)
+    userId          String
+    media           Media[]
+    reactions       Reaction[]
+    user            User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt       DateTime   @default(now())
+    updatedAt       DateTime   @updatedAt
 }
 
 enum ReactionType {
-	ANGRY
-	LIKE
-	HEART
-	SURPRISE
-	CRY
-	SMILE
+    ANGRY
+    LIKE
+    HEART
+    SURPRISE
+    CRY
+    SMILE
 }
 
 model Reaction {
-	id String @id @default(uuid())
-	type ReactionType
-	postId String?
-	post Post? @relation(fields: [postId], references: [id], onDelete: Cascade)
-	userId String
-	commentId String?
-	comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    id        String       @id @default(uuid())
+    type      ReactionType
+    postId    String?
+    post      Post?        @relation(fields: [postId], references: [id], onDelete: Cascade)
+    userId    String
+    commentId String?
+    comment   Comment?     @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+    createdAt DateTime     @default(now())
+    updatedAt DateTime     @updatedAt
 }
 
 model Notification {
-	id String @id @default(uuid())
-	media Media[]
-	receiverId String
-	receiver User @relation(fields: [receiverId], references: [id], onDelete: Cascade)
-	message String
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
+    id         String   @id @default(uuid())
+    media      Media[]
+    receiverId String
+    receiver   User     @relation(fields: [receiverId], references: [id], onDelete: Cascade)
+    message    String
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }

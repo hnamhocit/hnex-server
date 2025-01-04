@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
-import { Response } from '../common/interceptors/transform.interceptor';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
 	constructor(private readonly prismaService: PrismaService) {}
 
-	async getProfile(id: string): Promise<Response<User>> {
+	async getProfile(id: string) {
 		const user = await this.prismaService.user.findUnique({
 			where: { id },
 			include: {
@@ -68,13 +67,13 @@ export class UsersService {
 		return { data: user };
 	}
 
-	async delete(id: string): Promise<Response<User>> {
+	async delete(id: string) {
 		const user = await this.prismaService.user.delete({ where: { id } });
 
 		return { data: user };
 	}
 
-	async logout(id: string): Promise<Response<User>> {
+	async logout(id: string) {
 		const user = await this.prismaService.user.update({
 			where: { id },
 			data: { refreshToken: null },
