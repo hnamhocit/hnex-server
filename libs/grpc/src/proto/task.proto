@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package task;
+
+service TaskService {
+	rpc GetTask(Id) returns (Task);
+	rpc GetTasks(GetTasksDTO) returns (GetTasksPagination);
+	rpc DeleteTask(Id) returns (Task);
+	rpc CreateTask(CreateTaskDTO) returns (Tasks);
+	rpc UpdateTask(UpdateTaskDTO) returns (Tasks);
+}
+
+message Empty {}
+
+message Id {
+	string id  = 1;
+}
+
+message GetTasksDTO {
+	string userId = 1;
+	optional string cursor = 2;
+	optional int32 limit = 3; 
+}
+
+message GetTasksPagination {
+	optional string cursor = 1;
+	bool hasNext = 2;
+	repeated Task tasks = 3;
+}
+
+message CreateTaskDTO {
+	string title = 1;
+	string content = 2;
+	string authorId = 3;
+}
+
+message UpdateTaskDTO {
+	string id  = 1;
+	string title = 2;
+	string content = 3;
+}
+
+message Task {
+	string id = 1;
+	string title = 2;
+	string content = 3;
+	google.protobuf.Timestamp createdAt = 4;
+	google.protobuf.Timestamp updatedAt = 5;
+}
+
+message Tasks {
+	repeated Task tasks = 1;
+}

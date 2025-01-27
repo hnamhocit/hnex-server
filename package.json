@@ -1,0 +1,102 @@
+{
+	"name": "hnex",
+	"version": "0.0.1",
+	"description": "",
+	"author": "",
+	"private": true,
+	"license": "UNLICENSED",
+	"scripts": {
+		"build": "nest build",
+		"format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+		"dev-gateway": "nest start --watch",
+		"dev-auth": "nest start --watch auth",
+		"dev-task": "nest start --watch task",
+		"start:dev": "concurrently -c \"cyan.bold,yellow.bold,magenta.bold\" \"npm:dev-*\"",
+		"start:debug": "nest start --debug --watch",
+		"start:prod": "node dist/apps/hnex/main",
+		"lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"test:cov": "jest --coverage",
+		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+		"test:e2e": "jest --config ./apps/hnex/test/jest-e2e.json",
+		"proto:auth": "protoc --plugin=node_modules/.bin/protoc-gen-ts_protoc.cmd -I=./libs/grpc/src/proto --ts_proto_out=libs/grpc/src/proto ./libs/grpc/src/proto/auth.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+		"proto:task": "protoc --plugin=node_modules/.bin/protoc-gen-ts_protoc.cmd -I=./libs/grpc/src/proto --ts_proto_out=libs/grpc/src/proto ./libs/grpc/src/proto/task.proto --ts_proto_opt=nestJs=true --ts_proto_opt=fileSuffix=.pb",
+		"proto:all": "npm run proto:auth && npm run proto:task"
+	},
+	"dependencies": {
+		"@grpc/grpc-js": "^1.12.5",
+		"@grpc/proto-loader": "^0.7.13",
+		"@nestjs/common": "^10.0.0",
+		"@nestjs/core": "^10.0.0",
+		"@nestjs/mapped-types": "*",
+		"@nestjs/microservices": "^11.0.5",
+		"@nestjs/platform-express": "^10.0.0",
+		"@prisma/client": "^6.2.1",
+		"argon2": "^0.41.1",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.1",
+		"concurrently": "^9.1.2",
+		"hnex-proto": "https://github.com/hnamhocit/hnex-proto",
+		"kafkajs": "^2.2.4",
+		"prisma": "^6.2.1",
+		"reflect-metadata": "^0.2.0",
+		"rxjs": "^7.8.1"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^10.0.0",
+		"@nestjs/config": "^4.0.0",
+		"@nestjs/jwt": "^11.0.0",
+		"@nestjs/passport": "^11.0.5",
+		"@nestjs/schematics": "^10.0.0",
+		"@nestjs/testing": "^10.0.0",
+		"@protobuf-ts/protoc": "^2.9.4",
+		"@types/express": "^5.0.0",
+		"@types/jest": "^29.5.2",
+		"@types/node": "^22.10.10",
+		"@types/passport-jwt": "^4.0.1",
+		"@types/supertest": "^6.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.0",
+		"@typescript-eslint/parser": "^8.0.0",
+		"eslint": "^8.0.0",
+		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-prettier": "^5.0.0",
+		"jest": "^29.5.0",
+		"passport-jwt": "^4.0.1",
+		"prettier": "^3.0.0",
+		"source-map-support": "^0.5.21",
+		"supertest": "^7.0.0",
+		"ts-jest": "^29.1.0",
+		"ts-loader": "^9.4.3",
+		"ts-node": "^10.9.1",
+		"ts-proto": "^2.6.1",
+		"tsconfig-paths": "^4.2.0",
+		"typescript": "^5.1.3"
+	},
+	"jest": {
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"rootDir": ".",
+		"testRegex": ".*\\.spec\\.ts$",
+		"transform": {
+			"^.+\\.(t|j)s$": "ts-jest"
+		},
+		"collectCoverageFrom": [
+			"**/*.(t|j)s"
+		],
+		"coverageDirectory": "./coverage",
+		"testEnvironment": "node",
+		"roots": [
+			"<rootDir>/apps/",
+			"<rootDir>/libs/"
+		],
+		"moduleNameMapper": {
+			"^@app/shared(|/.*)$": "<rootDir>/libs/shared/src/$1",
+			"^@app/prisma(|/.*)$": "<rootDir>/libs/prisma/src/$1",
+			"^@app/grpc(|/.*)$": "<rootDir>/libs/grpc/src/$1"
+		}
+	}
+}
